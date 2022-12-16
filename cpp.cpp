@@ -31,6 +31,7 @@ using namespace std;
 #define ford(i,a,b)       for(ll i=b-1;i>=a;i--)
 #define form(i,a)         for(ll i=a;i>=0;i--)
 #define trav(i,a)         for(auto &i:a)
+#define inp(a)            for(auto& i:a){cin>>i;}
 typedef long long ll;
 typedef long double ld;
 typedef complex<ld> cd;
@@ -49,7 +50,7 @@ typedef vector<cd> vcd;
 const int INF=0x3f3f3f3f;
 const long long LLINF=1e18;
 const ll MAXN=2e5+10;
-const ll mod=1e9+7;
+const ll mod=998244353;
 const ll maxv=0;
 const ll minv=1e9;
 const ll maxn=110;
@@ -77,24 +78,92 @@ ll fact(ll m){
     if(m==0 or m==1){return 1;}
     else{return m*fact(m-1);}
 }
+ll set_bits(ll h)
+{
+    ll c=0;
+    while(h){c+=(h&1);h>>=1;}
+    return c;
+}
 void sortme(ll a[],ll n){sort(a,a+n);}
 template<typename T> void out(T res){cout<<res<<endl;}
 template<class T> bool ckmin(T& a,const T& b){return b<a?a=b,1:0;}
 template<class T> bool ckmax(T& a,const T& b){return a<b?a=b,1:0;}
 vector<ll>::iterator it;
+ll ncr(ll n,ll r){
+    if(n<r){return 0;}
+    if(r>n-r){r=n-r;}
+    ll dp[r+1];
+    memset(dp,0,sizeof(dp));
+    dp[0]=1;
+    forn(i,1,n+1){
+        for(ll j=min(i,r);j>0;j--){
+            dp[j]=dp[j]+dp[j-1];
+        }
+    }
+    return dp[r];
+}
+class Disjointset{
+    vl r,p,s;
+    public:
+    Disjointset(ll n){
+        r.resize(n+1,0);
+        p.resize(n+1,0);
+        s.resize(n+1,0);
+        frn(i,n+1){p[i]=i;s[i]=1;}
+    }
+    ll findpar(ll node){
+        if(node==p[node]){return node;}
+        return p[node]=findpar(p[node]);
+    }
+    void unionbyrank(ll u,ll v){
+        ll pu=findpar(u);
+        ll pv=findpar(v);
+        if(pu==pv){return ;}
+        if(r[pu]<r[pv]){p[pu]=pv;}
+        else if(r[pv]<r[pu]){p[pv]=pu;}
+        else{
+            p[pv]=pu;
+            r[pu]++;
+        }
+    }
+    void unionbysize(ll u,ll v){
+        ll pu=findpar(u);
+        ll pv=findpar(v);
+        if(pu==pv){return ;}
+        if(s[pu]<s[pv]){
+            p[pu]=pv;
+            s[pv]+=s[pu];
+        }
+        else{
+            p[pv]=pu;
+            s[pu]+=s[pv];
+        }
+    }
+};
 void hi()
 {
-    ll n,s=0;cin>>n;vl a(n),b(n);
-    forn(i,0,n){cin>>a[i];s+=a[i];}
-    forn(i,0,n){cin>>b[i];}sortall(b);
-    (s<=b[n-1]+b[n-2])?opy:opn;
-    // trav(i,a){cout<<i<<" ";}cout<<endl;
-    // trav(i,b){cout<<i<<" ";}cout<<endl;
+    ll n,c=0;cin>>n;vl v(n),r;inp(v);
+    if(sum(v,0)%2==0){out(0);return;}
+    trav(i,v){
+        c=1;
+        while(true){
+            ll d=i-i/2;
+            if(d&1){r.pb(c);break;}
+            else{
+                i/=2;c++;
+            }
+        }
+    }
+    ll res=maxi(r);
+    trav(i,r){
+        if(i>0){res=min(res,i);}
+    }
+    out(res);
 }
 int main()
 {
     ios::sync_with_stdio(false);
-    cin.tie(0);cout.tie(0);hi();
-    // ll t;cin>>t;while(t--){hi();}
+    cin.tie(0);cout.tie(0);
+    ll t=1;cin>>t;while(t--){hi();}
     return 0;
 }
